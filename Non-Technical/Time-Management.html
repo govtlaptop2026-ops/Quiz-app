@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Time-Management Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Time-Management Quiz</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1. What is time management?",
+  o: [
+    "Working continuously without rest",
+    "Planning and organizing time effectively",
+    "Doing many tasks at once",
+    "Ignoring schedules"
+  ],
+  a: "Planning and organizing time effectively"
+},
+{
+  q: "2. Which skill is essential for good time management?",
+  o: ["Procrastination", "Prioritization", "Laziness", "Disorganization"],
+  a: "Prioritization"
+},
+{
+  q: "3. What is the main benefit of effective time management?",
+  o: [
+    "Increased stress",
+    "Improved productivity",
+    "More confusion",
+    "Wasted time"
+  ],
+  a: "Improved productivity"
+},
+{
+  q: "4. Which habit wastes time the most?",
+  o: ["Planning", "Procrastination", "Scheduling", "Prioritizing"],
+  a: "Procrastination"
+},
+{
+  q: "5. What should be done first when managing tasks?",
+  o: [
+    "Do easy tasks only",
+    "Set clear goals",
+    "Delay work",
+    "Ignore deadlines"
+  ],
+  a: "Set clear goals"
+},
+{
+  q: "6. Making a to-do list helps to:",
+  o: [
+    "Forget tasks",
+    "Stay organized",
+    "Increase stress",
+    "Waste time"
+  ],
+  a: "Stay organized"
+},
+{
+  q: "7. Which technique helps focus on important tasks?",
+  o: ["Multitasking", "Prioritizing tasks", "Delaying work", "Random working"],
+  a: "Prioritizing tasks"
+},
+{
+  q: "8. What happens when time is poorly managed?",
+  o: [
+    "Less stress",
+    "Missed deadlines",
+    "Better results",
+    "Improved balance"
+  ],
+  a: "Missed deadlines"
+},
+{
+  q: "9. Which habit improves punctuality?",
+  o: ["Late planning", "Scheduling ahead", "Ignoring clocks", "Delaying starts"],
+  a: "Scheduling ahead"
+},
+{
+  q: "10. Time management helps reduce:",
+  o: [
+    "Productivity",
+    "Stress",
+    "Efficiency",
+    "Success"
+  ],
+  a: "Stress"
+},
+{
+  q: "11. What should be done when facing many tasks?",
+  o: [
+    "Panic",
+    "Prioritize tasks",
+    "Ignore some tasks",
+    "Delay all work"
+  ],
+  a: "Prioritize tasks"
+},
+{
+  q: "12. Which behavior reflects good time management?",
+  o: [
+    "Missing deadlines",
+    "Being punctual",
+    "Working without plans",
+    "Postponing work"
+  ],
+  a: "Being punctual"
+},
+{
+  q: "13. What does setting deadlines help with?",
+  o: [
+    "Confusion",
+    "Task completion",
+    "Delay",
+    "Carelessness"
+  ],
+  a: "Task completion"
+},
+{
+  q: "14. Which habit helps avoid last-minute pressure?",
+  o: [
+    "Early planning",
+    "Procrastination",
+    "Multitasking",
+    "Ignoring schedules"
+  ],
+  a: "Early planning"
+},
+{
+  q: "15. What is a common time management mistake?",
+  o: [
+    "Planning",
+    "Over-commitment",
+    "Scheduling",
+    "Prioritizing"
+  ],
+  a: "Over-commitment"
+},
+{
+  q: "16. Time management helps maintain:",
+  o: [
+    "Confusion",
+    "Work-life balance",
+    "Overwork",
+    "Disorganization"
+  ],
+  a: "Work-life balance"
+},
+{
+  q: "17. Which tool helps track tasks?",
+  o: ["To-do list", "Guessing", "Memory only", "Avoidance"],
+  a: "To-do list"
+},
+{
+  q: "18. What should be done after completing tasks?",
+  o: [
+    "Forget planning",
+    "Review progress",
+    "Stop working",
+    "Ignore results"
+  ],
+  a: "Review progress"
+},
+{
+  q: "19. Which attitude supports effective time management?",
+  o: [
+    "Laziness",
+    "Self-discipline",
+    "Carelessness",
+    "Procrastination"
+  ],
+  a: "Self-discipline"
+},
+{
+  q: "20. Effective time management leads to:",
+  o: [
+    "Failure",
+    "Stress",
+    "Success and efficiency",
+    "Confusion"
+  ],
+  a: "Success and efficiency"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Artificial Intelligence Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Artificial Intelligence</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1.What is Artificial Intelligence?",
+  o: [
+    "Natural human intelligence",
+    "Intelligence demonstrated by machines",
+    "A type of hardware",
+    "A database system"
+  ],
+  a: "Intelligence demonstrated by machines"
+},
+{
+  q: "2.Which is an example of AI?",
+  o: ["Calculator", "Smart Assistant", "Printer", "Scanner"],
+  a: "Smart Assistant"
+},
+{
+  q: "3.What is Machine Learning?",
+  o: [
+    "Programming machines manually",
+    "Machines learning from data",
+    "Hardware repair",
+    "Network management"
+  ],
+  a: "Machines learning from data"
+},
+{
+  q: "4.Which is a subset of AI?",
+  o: ["Database", "Machine Learning", "Operating System", "Compiler"],
+  a: "Machine Learning"
+},
+{
+  q: "5.What is Deep Learning?",
+  o: [
+    "Learning using simple rules",
+    "Learning using neural networks",
+    "Manual learning",
+    "Rule-based programming"
+  ],
+  a: "Learning using neural networks"
+},
+{
+  q: "6.What is a neural network inspired by?",
+  o: ["Computer hardware", "Human brain", "Internet", "Database"],
+  a: "Human brain"
+},
+{
+  q: "7.Which language is commonly used in AI?",
+  o: ["HTML", "Python", "CSS", "SQL"],
+  a: "Python"
+},
+{
+  q: "8.What is Natural Language Processing (NLP)?",
+  o: [
+    "Machine understanding human language",
+    "Programming language",
+    "Database management",
+    "Image editing"
+  ],
+  a: "Machine understanding human language"
+},
+{
+  q: "9.Which AI application is used in self-driving cars?",
+  o: ["Word processing", "Computer Vision", "Email service", "File storage"],
+  a: "Computer Vision"
+},
+{
+  q: "10.What is computer vision?",
+  o: [
+    "Computer repairing",
+    "Enabling machines to see and understand images",
+    "Video editing",
+    "Network monitoring"
+  ],
+  a: "Enabling machines to see and understand images"
+},
+{
+  q: "11.What is supervised learning?",
+  o: [
+    "Learning without data",
+    "Learning with labeled data",
+    "Self-learning without guidance",
+    "Manual learning"
+  ],
+  a: "Learning with labeled data"
+},
+{
+  q: "12.What is unsupervised learning?",
+  o: [
+    "Learning with labeled data",
+    "Learning without labeled data",
+    "Learning by teachers",
+    "Learning by rules"
+  ],
+  a: "Learning without labeled data"
+},
+{
+  q: "13.Which AI model is used for decision making?",
+  o: ["Decision Tree", "Stack", "Queue", "Array"],
+  a: "Decision Tree"
+},
+{
+  q: "14.What is reinforcement learning?",
+  o: [
+    "Learning from rewards and penalties",
+    "Learning with data labels",
+    "Learning without data",
+    "Learning by reading"
+  ],
+  a: "Learning from rewards and penalties"
+},
+{
+  q: "15.Which company developed ChatGPT?",
+  o: ["Google", "Microsoft", "OpenAI", "Amazon"],
+  a: "OpenAI"
+},
+{
+  q: "16.What is an AI agent?",
+  o: [
+    "A human operator",
+    "An entity that perceives and acts",
+    "A database",
+    "A server"
+  ],
+  a: "An entity that perceives and acts"
+},
+{
+  q: "17.What is expert system?",
+  o: [
+    "System that mimics human expert decisions",
+    "Operating system",
+    "Database system",
+    "Compiler"
+  ],
+  a: "System that mimics human expert decisions"
+},
+{
+  q: "18.Which AI field deals with speech recognition?",
+  o: ["NLP", "Computer Vision", "Robotics", "Data Mining"],
+  a: "NLP"
+},
+{
+  q: "19.What is the goal of AI?",
+  o: [
+    "Replace humans",
+    "Make machines intelligent",
+    "Only automate tasks",
+    "Control networks"
+  ],
+  a: "Make machines intelligent"
+},
+{
+  q: "20.Which is a real-life AI application?",
+  o: ["Smart recommendations", "Typewriter", "Calculator", "Pen drive"],
+  a: "Smart recommendations"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quantitative-Aptitude Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Quantitative-Aptitude Quiz</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1. What is the value of 25% of 200?",
+  o: ["25", "50", "75", "100"],
+  a: "50"
+},
+{
+  q: "2. What is the average of 10, 20, and 30?",
+  o: ["15", "20", "25", "30"],
+  a: "20"
+},
+{
+  q: "3. If the cost price is ₹100 and the selling price is ₹120, what is the profit?",
+  o: ["₹10", "₹15", "₹20", "₹25"],
+  a: "₹20"
+},
+{
+  q: "4. Find the simple interest on ₹500 at 10% per annum for 2 years.",
+  o: ["₹50", "₹100", "₹150", "₹200"],
+  a: "₹100"
+},
+{
+  q: "5. What is the ratio of 2 : 4?",
+  o: ["1 : 1", "1 : 2", "2 : 1", "4 : 1"],
+  a: "1 : 2"
+},
+{
+  q: "6. If 5 pens cost ₹25, what is the cost of 1 pen?",
+  o: ["₹3", "₹4", "₹5", "₹6"],
+  a: "₹5"
+},
+{
+  q: "7. What is 3² + 4²?",
+  o: ["7", "13", "25", "49"],
+  a: "25"
+},
+{
+  q: "8. A train travels 60 km in 1 hour. How far will it travel in 30 minutes?",
+  o: ["15 km", "20 km", "30 km", "40 km"],
+  a: "30 km"
+},
+{
+  q: "9. Find the LCM of 4 and 6.",
+  o: ["6", "12", "18", "24"],
+  a: "12"
+},
+{
+  q: "10. What is the square root of 144?",
+  o: ["10", "11", "12", "14"],
+  a: "12"
+},
+{
+  q: "11. If the marked price is ₹500 and a discount of 10% is given, what is the selling price?",
+  o: ["₹450", "₹460", "₹470", "₹480"],
+  a: "₹450"
+},
+{
+  q: "12. What is the value of 7 × 8?",
+  o: ["48", "54", "56", "64"],
+  a: "56"
+},
+{
+  q: "13. If the perimeter of a square is 40 cm, what is the length of one side?",
+  o: ["8 cm", "9 cm", "10 cm", "12 cm"],
+  a: "10 cm"
+},
+{
+  q: "14. What is the value of 0.5 × 0.2?",
+  o: ["0.01", "0.1", "0.2", "1"],
+  a: "0.1"
+},
+{
+  q: "15. A man buys a pen for ₹30 and sells it for ₹25. What is the loss?",
+  o: ["₹2", "₹3", "₹5", "₹10"],
+  a: "₹5"
+},
+{
+  q: "16. What is the HCF of 12 and 18?",
+  o: ["3", "6", "9", "12"],
+  a: "6"
+},
+{
+  q: "17. If x + 5 = 12, what is the value of x?",
+  o: ["5", "6", "7", "8"],
+  a: "7"
+},
+{
+  q: "18. What is 20% of 150?",
+  o: ["20", "25", "30", "35"],
+  a: "30"
+},
+{
+  q: "19. A car travels 120 km in 2 hours. What is its speed?",
+  o: ["40 km/h", "50 km/h", "60 km/h", "70 km/h"],
+  a: "60 km/h"
+},
+{
+  q: "20. What is the area of a rectangle with length 10 cm and breadth 5 cm?",
+  o: ["25 cm²", "40 cm²", "50 cm²", "60 cm²"],
+  a: "50 cm²"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

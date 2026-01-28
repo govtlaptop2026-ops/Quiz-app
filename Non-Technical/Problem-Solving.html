@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Problem-Solving Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Problem-Solving Quiz</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1. What is the first step in problem solving?",
+  o: [
+    "Finding solutions",
+    "Identifying the problem",
+    "Implementing the solution",
+    "Evaluating results"
+  ],
+  a: "Identifying the problem"
+},
+{
+  q: "2. Which skill helps most in solving complex problems?",
+  o: ["Guessing", "Analytical thinking", "Avoidance", "Complaining"],
+  a: "Analytical thinking"
+},
+{
+  q: "3. What should be done after identifying a problem?",
+  o: [
+    "Ignore it",
+    "Analyze the causes",
+    "Jump to conclusions",
+    "Blame others"
+  ],
+  a: "Analyze the causes"
+},
+{
+  q: "4. Which approach is best for effective problem solving?",
+  o: ["Trial and error only", "Systematic approach", "Emotional reaction", "Delaying action"],
+  a: "Systematic approach"
+},
+{
+  q: "5. What helps in generating better solutions?",
+  o: [
+    "Fixed thinking",
+    "Brainstorming",
+    "Fear of failure",
+    "Ignoring ideas"
+  ],
+  a: "Brainstorming"
+},
+{
+  q: "6. Why is evaluating solutions important?",
+  o: [
+    "To waste time",
+    "To choose the most effective option",
+    "To confuse the team",
+    "To avoid responsibility"
+  ],
+  a: "To choose the most effective option"
+},
+{
+  q: "7. Which factor should be considered while selecting a solution?",
+  o: ["Impact and feasibility", "Personal preference", "Quickness only", "Popularity"],
+  a: "Impact and feasibility"
+},
+{
+  q: "8. What does creative thinking help with?",
+  o: [
+    "Repeating old methods",
+    "Finding innovative solutions",
+    "Avoiding challenges",
+    "Ignoring constraints"
+  ],
+  a: "Finding innovative solutions"
+},
+{
+  q: "9. What is a common barrier to problem solving?",
+  o: ["Open-mindedness", "Assumptions", "Logical reasoning", "Planning"],
+  a: "Assumptions"
+},
+{
+  q: "10. What should be done if a solution does not work?",
+  o: [
+    "Give up",
+    "Review and try alternatives",
+    "Blame others",
+    "Ignore the issue"
+  ],
+  a: "Review and try alternatives"
+},
+{
+  q: "11. Which ability helps in solving problems under pressure?",
+  o: ["Panic", "Calmness", "Confusion", "Anger"],
+  a: "Calmness"
+},
+{
+  q: "12. What role does decision-making play in problem solving?",
+  o: [
+    "No role",
+    "Choosing the best option",
+    "Delaying action",
+    "Avoiding responsibility"
+  ],
+  a: "Choosing the best option"
+},
+{
+  q: "13. Which method helps identify the root cause of a problem?",
+  o: ["Guessing", "Root cause analysis", "Ignoring details", "Surface thinking"],
+  a: "Root cause analysis"
+},
+{
+  q: "14. What does collaboration help in problem solving?",
+  o: [
+    "Creating confusion",
+    "Gaining diverse perspectives",
+    "Wasting time",
+    "Avoiding accountability"
+  ],
+  a: "Gaining diverse perspectives"
+},
+{
+  q: "15. Which mindset improves problem-solving ability?",
+  o: [
+    "Fixed mindset",
+    "Growth mindset",
+    "Fearful mindset",
+    "Negative mindset"
+  ],
+  a: "Growth mindset"
+},
+{
+  q: "16. What should be done after implementing a solution?",
+  o: [
+    "Forget the problem",
+    "Monitor results",
+    "Blame the process",
+    "Stop learning"
+  ],
+  a: "Monitor results"
+},
+{
+  q: "17. Which skill supports logical problem solving?",
+  o: ["Emotional thinking", "Critical thinking", "Impulsiveness", "Avoidance"],
+  a: "Critical thinking"
+},
+{
+  q: "18. What helps prevent future problems?",
+  o: [
+    "Ignoring lessons learned",
+    "Documenting and learning",
+    "Repeating mistakes",
+    "Avoiding review"
+  ],
+  a: "Documenting and learning"
+},
+{
+  q: "19. Which attitude is essential for effective problem solving?",
+  o: ["Giving up easily", "Persistence", "Blaming others", "Carelessness"],
+  a: "Persistence"
+},
+{
+  q: "20. What best describes an effective problem solver?",
+  o: [
+    "Avoids challenges",
+    "Thinks logically and acts decisively",
+    "Panics under pressure",
+    "Depends only on luck"
+  ],
+  a: "Thinks logically and acts decisively"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

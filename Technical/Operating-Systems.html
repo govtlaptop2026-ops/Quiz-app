@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Operating Systems Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Operating Systems</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1.What is an Operating System?",
+  o: [
+    "Application software",
+    "System software that manages hardware",
+    "Programming language",
+    "Database"
+  ],
+  a: "System software that manages hardware"
+},
+{
+  q: "2.Main function of OS is?",
+  o: [
+    "Play games",
+    "Manage system resources",
+    "Write programs",
+    "Design UI"
+  ],
+  a: "Manage system resources"
+},
+{
+  q: "3.Which is an example of Operating System?",
+  o: ["Windows", "MS Word", "Chrome", "Python"],
+  a: "Windows"
+},
+{
+  q: "4.What is a process?",
+  o: [
+    "A program in execution",
+    "A file",
+    "A folder",
+    "A hardware device"
+  ],
+  a: "A program in execution"
+},
+{
+  q: "5.What is a thread?",
+  o: [
+    "Independent program",
+    "Smallest unit of process",
+    "Hardware component",
+    "Operating system"
+  ],
+  a: "Smallest unit of process"
+},
+{
+  q: "6.What is multitasking?",
+  o: [
+    "Running one program",
+    "Running multiple programs at the same time",
+    "Stopping programs",
+    "Deleting files"
+  ],
+  a: "Running multiple programs at the same time"
+},
+{
+  q: "7.What is scheduling?",
+  o: [
+    "Memory allocation",
+    "Deciding which process runs next",
+    "File storage",
+    "User authentication"
+  ],
+  a: "Deciding which process runs next"
+},
+{
+  q: "8.Which scheduling algorithm uses time slices?",
+  o: [
+    "FCFS",
+    "SJF",
+    "Round Robin",
+    "Priority"
+  ],
+  a: "Round Robin"
+},
+{
+  q: "9.What is memory management?",
+  o: [
+    "Storing files",
+    "Managing main memory usage",
+    "Managing CPU",
+    "Managing users"
+  ],
+  a: "Managing main memory usage"
+},
+{
+  q: "10.What is virtual memory?",
+  o: [
+    "Physical RAM only",
+    "Extension of RAM using disk",
+    "Cache memory",
+    "CPU register"
+  ],
+  a: "Extension of RAM using disk"
+},
+{
+  q: "11.What is a deadlock?",
+  o: [
+    "Process finished",
+    "Processes waiting forever for resources",
+    "System crash",
+    "High speed execution"
+  ],
+  a: "Processes waiting forever for resources"
+},
+{
+  q: "12.Which condition is required for deadlock?",
+  o: [
+    "No mutual exclusion",
+    "Preemption allowed",
+    "Circular wait",
+    "Low memory"
+  ],
+  a: "Circular wait"
+},
+{
+  q: "13.What is paging?",
+  o: [
+    "File system",
+    "Memory management technique",
+    "CPU scheduling",
+    "Disk scheduling"
+  ],
+  a: "Memory management technique"
+},
+{
+  q: "14.What is segmentation?",
+  o: [
+    "Dividing memory into fixed size blocks",
+    "Dividing memory into logical segments",
+    "File storage method",
+    "CPU scheduling method"
+  ],
+  a: "Dividing memory into logical segments"
+},
+{
+  q: "15.What is a file system?",
+  o: [
+    "Hardware device",
+    "Method to store and organize files",
+    "Network protocol",
+    "Programming language"
+  ],
+  a: "Method to store and organize files"
+},
+{
+  q: "16.Which OS is open source?",
+  o: ["Linux", "Windows", "macOS", "DOS"],
+  a: "Linux"
+},
+{
+  q: "17.What is kernel?",
+  o: [
+    "Application software",
+    "Core of the operating system",
+    "Hardware device",
+    "User interface"
+  ],
+  a: "Core of the operating system"
+},
+{
+  q: "18.What is system call?",
+  o: [
+    "User calling OS",
+    "Interface between user program and OS",
+    "Hardware interrupt",
+    "Error message"
+  ],
+  a: "Interface between user program and OS"
+},
+{
+  q: "19.What is context switching?",
+  o: [
+    "Switching users",
+    "Switching CPU from one process to another",
+    "Switching memory",
+    "Switching files"
+  ],
+  a: "Switching CPU from one process to another"
+},
+{
+  q: "20.What is booting?",
+  o: [
+    "Shutting down system",
+    "Starting the operating system",
+    "Installing software",
+    "Formatting disk"
+  ],
+  a: "Starting the operating system"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Logical-Reasoning Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Logical-Reasoning Quiz</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1. What comes next in the series: 2, 4, 8, 16, ?",
+  o: ["18", "24", "32", "64"],
+  a: "32"
+},
+{
+  q: "2. Find the odd one out.",
+  o: ["Apple", "Banana", "Mango", "Carrot"],
+  a: "Carrot"
+},
+{
+  q: "3. If ALL dogs are animals and SOME animals are cats, which statement is true?",
+  o: [
+    "All dogs are cats",
+    "Some animals are cats",
+    "No dogs are animals",
+    "All cats are dogs"
+  ],
+  a: "Some animals are cats"
+},
+{
+  q: "4. What comes next: A, C, E, G, ?",
+  o: ["H", "I", "J", "K"],
+  a: "I"
+},
+{
+  q: "5. Find the missing number: 3, 6, 12, 24, ?",
+  o: ["36", "42", "48", "60"],
+  a: "48"
+},
+{
+  q: "6. If today is Monday, what day will it be after 14 days?",
+  o: ["Monday", "Tuesday", "Wednesday", "Sunday"],
+  a: "Monday"
+},
+{
+  q: "7. Which number does not belong?",
+  o: ["2", "3", "5", "7", "9"],
+  a: "9"
+},
+{
+  q: "8. If CAT = 24 and DOG = 26, then COW = ?",
+  o: ["41", "45", "49", "51"],
+  a: "49"
+},
+{
+  q: "9. A man walks 10 km east and then 10 km west. How far is he from the starting point?",
+  o: ["0 km", "10 km", "20 km", "5 km"],
+  a: "0 km"
+},
+{
+  q: "10. Find the next number: 1, 4, 9, 16, ?",
+  o: ["20", "24", "25", "30"],
+  a: "25"
+},
+{
+  q: "11. Which word is the odd one out?",
+  o: ["Pen", "Pencil", "Eraser", "Paper"],
+  a: "Paper"
+},
+{
+  q: "12. If 1 = 5, 2 = 25, 3 = 325, then 4 = ?",
+  o: ["4325", "3254", "4253", "4523"],
+  a: "4325"
+},
+{
+  q: "13. What comes next in the series: 5, 10, 20, 40, ?",
+  o: ["60", "70", "80", "100"],
+  a: "80"
+},
+{
+  q: "14. If all roses are flowers and some flowers fade, what can be concluded?",
+  o: [
+    "All roses fade",
+    "Some roses fade",
+    "No roses fade",
+    "Cannot be determined"
+  ],
+  a: "Cannot be determined"
+},
+{
+  q: "15. Find the missing letter: Z, X, V, T, ?",
+  o: ["S", "R", "Q", "P"],
+  a: "R"
+},
+{
+  q: "16. A clock shows 3:00. What is the angle between the hour and minute hands?",
+  o: ["0°", "30°", "60°", "90°"],
+  a: "90°"
+},
+{
+  q: "17. If 6 workers take 10 days to complete a job, how many days will 10 workers take?",
+  o: ["4", "5", "6", "10"],
+  a: "6"
+},
+{
+  q: "18. Which number is missing: 2, 5, 10, 17, ?",
+  o: ["24", "26", "28", "30"],
+  a: "26"
+},
+{
+  q: "19. Find the odd pair.",
+  o: ["Eye–See", "Ear–Hear", "Nose–Smell", "Hand–Taste"],
+  a: "Hand–Taste"
+},
+{
+  q: "20. If SOUTH is coded as TPMUI, how is NORTH coded?",
+  o: ["OPSUI", "OPSUI", "OPSUI", "OPSUI"],
+  a: "OPSUI"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

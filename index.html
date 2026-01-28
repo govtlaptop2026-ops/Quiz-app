@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz App</title>
+  <style>
+
+     body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .card{
+      font-size: 60px;
+      font-weight: bold;
+      color: white;
+      margin-left: 10%;
+      text-shadow: 2px 2px #0d47a1;
+    }
+
+    button {
+      background-color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.7);
+      transition: transform 0.2s ease;
+      margin: 9.9%;
+      margin-left: 25%;
+    }
+    button a{
+        text-decoration: none;
+      color: #2196f3;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen 1: Start -->
+  <div class="card" id="screen1">
+    <img src="images\quiz.png" alt="Quiz Logo">
+    <button onclick="showScreen(2)">
+    <a href="select.html">START</a></button>
+  </div>
+
+  <!-- Screen 3: Question -->
+ <!-- <div class="card" id="screen3" style="display:none;">
+    <h3>What does HTML stand for?</h3>
+    <div class="option"><input type="radio" name="q1" value="A"> A: Hyper Text Markup Language</div>
+    <div class="option"><input type="radio" name="q1" value="B"> B: High Tech Machine Learning</div>
+    <div class="option"><input type="radio" name="q1" value="C"> C: Home Tool Management Logic</div>
+    <div class="option"><input type="radio" name="q1" value="D"> D: Hyperlink and Text Management Language</div>
+    <button onclick="submitAnswer()">SUBMIT</button>
+  </div>
+
+  <!-- Screen 4: Result -->
+  <div class="card" id="screen4" style="display:none;">
+    <h2 id="resultText"></h2>
+    <button onclick="showScreen(1)">Home</button>
+    <button onclick="showScreen(3)">Replay</button>
+  </div>
+  
+  <script>
+    function showScreen(n) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('screen' + i).style.display = 'none';
+      }
+      document.getElementById('screen' + n).style.display = 'block';
+    }
+
+    function submitAnswer() {
+      const answer = document.querySelector('input[name="q1"]:checked');
+      if (answer && answer.value === 'A') {
+        document.getElementById('resultText').innerText = '🎉 YOU WIN!';
+      } else {
+        document.getElementById('resultText').innerText = '😢 YOU LOST!';
+      }
+      showScreen(4);
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Database Management Systems Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Database Management Systems</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1.What is DBMS?",
+  o: [
+    "A programming language",
+    "A software to manage databases",
+    "An operating system",
+    "A hardware device"
+  ],
+  a: "A software to manage databases"
+},
+{
+  q: "2.What is a database?",
+  o: [
+    "A collection of programs",
+    "A collection of files",
+    "An organized collection of data",
+    "A data type"
+  ],
+  a: "An organized collection of data"
+},
+{
+  q: "3.Which language is used to interact with databases?",
+  o: ["HTML", "CSS", "SQL", "XML"],
+  a: "SQL"
+},
+{
+  q: "4.What does SQL stand for?",
+  o: [
+    "Structured Query Language",
+    "Simple Query Language",
+    "Standard Question Language",
+    "Sequential Query Language"
+  ],
+  a: "Structured Query Language"
+},
+{
+  q: "5.Which command is used to retrieve data?",
+  o: ["GET", "FETCH", "SELECT", "READ"],
+  a: "SELECT"
+},
+{
+  q: "6.Which command is used to insert data?",
+  o: ["ADD", "INSERT", "PUT", "UPDATE"],
+  a: "INSERT"
+},
+{
+  q: "7.What is a table?",
+  o: [
+    "A collection of rows and columns",
+    "A database",
+    "A query",
+    "A file"
+  ],
+  a: "A collection of rows and columns"
+},
+{
+  q: "8.What is a primary key?",
+  o: [
+    "A duplicate value",
+    "A key that uniquely identifies a record",
+    "A foreign key",
+    "A table name"
+  ],
+  a: "A key that uniquely identifies a record"
+},
+{
+  q: "9.What is a foreign key?",
+  o: [
+    "A primary key",
+    "A key used to link tables",
+    "A duplicate key",
+    "An index"
+  ],
+  a: "A key used to link tables"
+},
+{
+  q: "10.Which DBMS is an example of RDBMS?",
+  o: ["MySQL", "MongoDB", "Redis", "Cassandra"],
+  a: "MySQL"
+},
+{
+  q: "11.What does RDBMS stand for?",
+  o: [
+    "Relational Database Management System",
+    "Real Database Management System",
+    "Remote Database Management System",
+    "Random Database Management System"
+  ],
+  a: "Relational Database Management System"
+},
+{
+  q: "12.What is a record?",
+  o: [
+    "A column in a table",
+    "A row in a table",
+    "A database",
+    "A key"
+  ],
+  a: "A row in a table"
+},
+{
+  q: "13.What is a field?",
+  o: [
+    "A row",
+    "A table",
+    "A column",
+    "A database"
+  ],
+  a: "A column"
+},
+{
+  q: "14.Which command is used to delete data?",
+  o: ["REMOVE", "DROP", "DELETE", "CLEAR"],
+  a: "DELETE"
+},
+{
+  q: "15.Which command is used to modify data?",
+  o: ["CHANGE", "ALTER", "UPDATE", "MODIFY"],
+  a: "UPDATE"
+},
+{
+  q: "16.What is normalization?",
+  o: [
+    "Storing duplicate data",
+    "Organizing data to reduce redundancy",
+    "Deleting data",
+    "Backing up data"
+  ],
+  a: "Organizing data to reduce redundancy"
+},
+{
+  q: "17.What is redundancy?",
+  o: [
+    "Data security",
+    "Duplicate data",
+    "Missing data",
+    "Encrypted data"
+  ],
+  a: "Duplicate data"
+},
+{
+  q: "18.What is a query?",
+  o: [
+    "A request for data",
+    "A table",
+    "A database",
+    "A key"
+  ],
+  a: "A request for data"
+},
+{
+  q: "19.Which command removes a table completely?",
+  o: ["DELETE", "REMOVE", "DROP", "TRUNCATE"],
+  a: "DROP"
+},
+{
+  q: "20.What is DBMS mainly used for?",
+  o: [
+    "Data storage and management",
+    "Image editing",
+    "Web designing",
+    "Gaming"
+  ],
+  a: "Data storage and management"
+}
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

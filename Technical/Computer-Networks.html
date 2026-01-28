@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Computer Networks Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Computer Networks</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+
+{
+  q: "1.What is a computer network?",
+  o: [
+    "A single computer",
+    "A group of connected computers",
+    "A software program",
+    "An operating system"
+  ],
+  a: "A group of connected computers"
+},
+{
+  q: "2.What is the main purpose of a network?",
+  o: [
+    "Gaming",
+    "Data sharing",
+    "Programming",
+    "Printing only"
+  ],
+  a: "Data sharing"
+},
+{
+  q: "3.What does LAN stand for?",
+  o: [
+    "Large Area Network",
+    "Local Area Network",
+    "Long Area Network",
+    "Light Area Network"
+  ],
+  a: "Local Area Network"
+},
+{
+  q: "4.What does WAN stand for?",
+  o: [
+    "Wide Area Network",
+    "World Area Network",
+    "Wireless Area Network",
+    "Web Area Network"
+  ],
+  a: "Wide Area Network"
+},
+{
+  q: "5.Which device connects different networks?",
+  o: ["Switch", "Hub", "Router", "Repeater"],
+  a: "Router"
+},
+{
+  q: "6.Which device connects computers within a LAN?",
+  o: ["Router", "Modem", "Switch", "Gateway"],
+  a: "Switch"
+},
+{
+  q: "7.What is an IP address?",
+  o: [
+    "A computer name",
+    "A unique network address",
+    "A MAC address",
+    "A domain name"
+  ],
+  a: "A unique network address"
+},
+{
+  q: "8.Which IP version uses 32-bit addressing?",
+  o: ["IPv6", "IPv4", "IPX", "TCP"],
+  a: "IPv4"
+},
+{
+  q: "9.Which IP version uses 128-bit addressing?",
+  o: ["IPv4", "IPv6", "IPX", "UDP"],
+  a: "IPv6"
+},
+{
+  q: "10.What is a MAC address?",
+  o: [
+    "Logical address",
+    "Physical hardware address",
+    "IP address",
+    "Domain name"
+  ],
+  a: "Physical hardware address"
+},
+{
+  q: "11.Which protocol is used to send emails?",
+  o: ["FTP", "SMTP", "HTTP", "POP"],
+  a: "SMTP"
+},
+{
+  q: "12.Which protocol is used to receive emails?",
+  o: ["SMTP", "HTTP", "POP3", "FTP"],
+  a: "POP3"
+},
+{
+  q: "13.Which protocol is used for web browsing?",
+  o: ["FTP", "SMTP", "HTTP", "SNMP"],
+  a: "HTTP"
+},
+{
+  q: "14.Which layer of OSI model is responsible for routing?",
+  o: ["Data Link", "Network", "Transport", "Session"],
+  a: "Network"
+},
+{
+  q: "15.How many layers are there in the OSI model?",
+  o: ["5", "6", "7", "8"],
+  a: "7"
+},
+{
+  q: "16.Which topology uses a central hub or switch?",
+  o: ["Bus", "Ring", "Star", "Mesh"],
+  a: "Star"
+},
+{
+  q: "17.Which topology has no central device?",
+  o: ["Star", "Bus", "Mesh", "Tree"],
+  a: "Bus"
+},
+{
+  q: "18.What is bandwidth?",
+  o: [
+    "Amount of data that can be transmitted",
+    "Network security",
+    "IP address range",
+    "Cable length"
+  ],
+  a: "Amount of data that can be transmitted"
+},
+{
+  q: "19.What is latency?",
+  o: [
+    "Transmission speed",
+    "Delay in data transmission",
+    "Data loss",
+    "Bandwidth size"
+  ],
+  a: "Delay in data transmission"
+},
+{
+  q: "20.What is a firewall?",
+  o: [
+    "A network security system",
+    "A router",
+    "A switch",
+    "A cable"
+  ],
+  a: "A network security system"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

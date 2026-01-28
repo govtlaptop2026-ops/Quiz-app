@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reading-Comprehension Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Reading-Comprehension Quiz</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "1. What is the main benefit of reading mentioned in the passage?",
+  o: [
+    "Physical fitness",
+    "Improved knowledge and thinking skills",
+    "Entertainment only",
+    "Time pass"
+  ],
+  a: "Improved knowledge and thinking skills"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "2. According to the passage, regular reading improves:",
+  o: [
+    "Only writing skills",
+    "Communication skills",
+    "Listening skills only",
+    "Memory loss"
+  ],
+  a: "Communication skills"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "3. Which skill is NOT mentioned as improved by reading?",
+  o: [
+    "Vocabulary",
+    "Critical thinking",
+    "Communication",
+    "Physical strength"
+  ],
+  a: "Physical strength"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "4. Reading regularly helps people develop:",
+  o: [
+    "Poor understanding",
+    "Better communication skills",
+    "Fear of learning",
+    "Confusion"
+  ],
+  a: "Better communication skills"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "5. The passage mainly focuses on:",
+  o: [
+    "Problems of reading",
+    "Benefits of reading",
+    "Types of books",
+    "History of reading"
+  ],
+  a: "Benefits of reading"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "6. What does reading help improve first, according to the passage?",
+  o: [
+    "Knowledge",
+    "Physical health",
+    "Entertainment value",
+    "Sleeping habits"
+  ],
+  a: "Knowledge"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "7. Which word best describes the impact of reading?",
+  o: [
+    "Harmful",
+    "Useless",
+    "Beneficial",
+    "Dangerous"
+  ],
+  a: "Beneficial"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "8. According to the passage, people who read regularly develop:",
+  o: [
+    "Weak communication skills",
+    "Better communication skills",
+    "No communication skills",
+    "Poor understanding"
+  ],
+  a: "Better communication skills"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "9. Reading helps in developing understanding of:",
+  o: [
+    "Only books",
+    "The world around them",
+    "One subject only",
+    "Entertainment"
+  ],
+  a: "The world around them"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "10. Which of the following is a result of improved vocabulary?",
+  o: [
+    "Better expression",
+    "Confusion",
+    "Silence",
+    "Misunderstanding"
+  ],
+  a: "Better expression"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "11. What kind of thinking does reading improve?",
+  o: [
+    "Negative thinking",
+    "Critical thinking",
+    "Random thinking",
+    "Lazy thinking"
+  ],
+  a: "Critical thinking"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "12. The passage suggests that reading should be:",
+  o: [
+    "Occasional",
+    "Avoided",
+    "Regular",
+    "Unnecessary"
+  ],
+  a: "Regular"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "13. Which ability is linked to better communication?",
+  o: [
+    "Reading regularly",
+    "Watching TV",
+    "Sleeping more",
+    "Avoiding books"
+  ],
+  a: "Reading regularly"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "14. The tone of the passage is:",
+  o: [
+    "Negative",
+    "Neutral",
+    "Positive",
+    "Sarcastic"
+  ],
+  a: "Positive"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "15. Which of the following best summarizes the passage?",
+  o: [
+    "Reading wastes time",
+    "Reading has many benefits",
+    "Reading is difficult",
+    "Reading is boring"
+  ],
+  a: "Reading has many benefits"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "16. Reading regularly helps in improving:",
+  o: [
+    "Only vocabulary",
+    "Only knowledge",
+    "Multiple skills",
+    "Physical health"
+  ],
+  a: "Multiple skills"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "17. Which statement is TRUE according to the passage?",
+  o: [
+    "Reading reduces understanding",
+    "Reading improves communication",
+    "Reading affects health negatively",
+    "Reading causes confusion"
+  ],
+  a: "Reading improves communication"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "18. The passage connects reading with:",
+  o: [
+    "Physical fitness",
+    "Mental development",
+    "Entertainment only",
+    "Sleep"
+  ],
+  a: "Mental development"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "19. Which habit is encouraged by the passage?",
+  o: [
+    "Avoiding reading",
+    "Regular reading",
+    "Skipping books",
+    "Watching TV"
+  ],
+  a: "Regular reading"
+},
+{
+  passage: "Reading helps improve knowledge, vocabulary, and critical thinking. People who read regularly develop better communication skills and a deeper understanding of the world around them.",
+  q: "20. What is the overall message of the passage?",
+  o: [
+    "Reading is unnecessary",
+    "Reading improves overall abilities",
+    "Reading is tiring",
+    "Reading is costly"
+  ],
+  a: "Reading improves overall abilities"
+}
+];
+
+let i=0,answers=[],timer,time=15;
+const passageEl=document.createElement("div");
+passageEl.style.background="#f0f0f0";
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

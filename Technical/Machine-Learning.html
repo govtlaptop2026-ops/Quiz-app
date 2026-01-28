@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Machine Learning Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Machine Learning</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1.What is Machine Learning?",
+  o: [
+    "Programming computers manually",
+    "Teaching machines to learn from data",
+    "Hardware development",
+    "Network management"
+  ],
+  a: "Teaching machines to learn from data"
+},
+{
+  q: "2.Machine Learning is a subset of?",
+  o: ["Database", "Artificial Intelligence", "Web Development", "Networking"],
+  a: "Artificial Intelligence"
+},
+{
+  q: "3.Which language is widely used in ML?",
+  o: ["HTML", "CSS", "Python", "SQL"],
+  a: "Python"
+},
+{
+  q: "4.What is training data?",
+  o: [
+    "Data used to test models",
+    "Data used to train ML models",
+    "Unused data",
+    "Random data"
+  ],
+  a: "Data used to train ML models"
+},
+{
+  q: "5.What is supervised learning?",
+  o: [
+    "Learning without data",
+    "Learning with labeled data",
+    "Learning by trial and error",
+    "Manual learning"
+  ],
+  a: "Learning with labeled data"
+},
+{
+  q: "6.What is unsupervised learning?",
+  o: [
+    "Learning with labels",
+    "Learning without labels",
+    "Learning with rewards",
+    "Learning by instructions"
+  ],
+  a: "Learning without labels"
+},
+{
+  q: "7.What is reinforcement learning?",
+  o: [
+    "Learning with labels",
+    "Learning from rewards and penalties",
+    "Learning without data",
+    "Learning manually"
+  ],
+  a: "Learning from rewards and penalties"
+},
+{
+  q: "8.What is a model in ML?",
+  o: [
+    "A hardware device",
+    "A trained program that makes predictions",
+    "A database",
+    "A network cable"
+  ],
+  a: "A trained program that makes predictions"
+},
+{
+  q: "9.What is overfitting?",
+  o: [
+    "Model performs well on training data but poorly on new data",
+    "Model performs poorly always",
+    "Using too little data",
+    "Deleting data"
+  ],
+  a: "Model performs well on training data but poorly on new data"
+},
+{
+  q: "10.What is underfitting?",
+  o: [
+    "Model too complex",
+    "Model too simple to capture patterns",
+    "Model trained too much",
+    "Model uses large data"
+  ],
+  a: "Model too simple to capture patterns"
+},
+{
+  q: "11.Which algorithm is used for classification?",
+  o: ["Linear Regression", "Logistic Regression", "K-Means", "Apriori"],
+  a: "Logistic Regression"
+},
+{
+  q: "12.Which algorithm is used for clustering?",
+  o: ["Decision Tree", "K-Means", "Naive Bayes", "SVM"],
+  a: "K-Means"
+},
+{
+  q: "13.What is a feature?",
+  o: [
+    "Input variable",
+    "Output result",
+    "Algorithm",
+    "Model"
+  ],
+  a: "Input variable"
+},
+{
+  q: "14.What is a label?",
+  o: [
+    "Input data",
+    "Correct output in supervised learning",
+    "Algorithm",
+    "Model parameter"
+  ],
+  a: "Correct output in supervised learning"
+},
+{
+  q: "15.What is accuracy?",
+  o: [
+    "Speed of model",
+    "Correct predictions percentage",
+    "Size of dataset",
+    "Training time"
+  ],
+  a: "Correct predictions percentage"
+},
+{
+  q: "16.What is training?",
+  o: [
+    "Testing the model",
+    "Teaching model using data",
+    "Deploying model",
+    "Deleting errors"
+  ],
+  a: "Teaching model using data"
+},
+{
+  q: "17.What is testing?",
+  o: [
+    "Teaching model",
+    "Evaluating model performance on new data",
+    "Creating data",
+    "Saving model"
+  ],
+  a: "Evaluating model performance on new data"
+},
+{
+  q: "18.Which ML algorithm is used for decision making?",
+  o: ["Decision Tree", "Array", "Queue", "Stack"],
+  a: "Decision Tree"
+},
+{
+  q: "19.What is deep learning?",
+  o: [
+    "Learning with simple rules",
+    "Learning using neural networks with many layers",
+    "Manual learning",
+    "Rule-based learning"
+  ],
+  a: "Learning using neural networks with many layers"
+},
+{
+  q: "20.Which is a real-life ML application?",
+  o: [
+    "Email spam detection",
+    "Text editor",
+    "Calculator",
+    "File explorer"
+  ],
+  a: "Email spam detection"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

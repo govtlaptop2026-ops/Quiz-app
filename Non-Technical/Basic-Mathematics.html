@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Basic-Mathematics Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Basic-Mathematics Quiz</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1. What is 5 + 7?",
+  o: ["10", "11", "12", "13"],
+  a: "12"
+},
+{
+  q: "2. What is 15 − 9?",
+  o: ["4", "5", "6", "7"],
+  a: "6"
+},
+{
+  q: "3. What is 6 × 8?",
+  o: ["42", "46", "48", "54"],
+  a: "48"
+},
+{
+  q: "4. What is 36 ÷ 6?",
+  o: ["4", "5", "6", "7"],
+  a: "6"
+},
+{
+  q: "5. What is the square of 9?",
+  o: ["18", "27", "81", "99"],
+  a: "81"
+},
+{
+  q: "6. What is the value of 7²?",
+  o: ["14", "21", "49", "56"],
+  a: "49"
+},
+{
+  q: "7. What is 10% of 200?",
+  o: ["10", "15", "20", "25"],
+  a: "20"
+},
+{
+  q: "8. What is the next number: 2, 4, 6, 8, ?",
+  o: ["9", "10", "11", "12"],
+  a: "10"
+},
+{
+  q: "9. What is 3³?",
+  o: ["6", "9", "27", "81"],
+  a: "27"
+},
+{
+  q: "10. What is 50% of 80?",
+  o: ["20", "30", "40", "50"],
+  a: "40"
+},
+{
+  q: "11. What is 9 + 6 × 2?",
+  o: ["21", "24", "30", "42"],
+  a: "21"
+},
+{
+  q: "12. What is the perimeter of a square with side 5 units?",
+  o: ["10", "15", "20", "25"],
+  a: "20"
+},
+{
+  q: "13. What is the value of 100 ÷ 4?",
+  o: ["20", "25", "30", "40"],
+  a: "25"
+},
+{
+  q: "14. Which number is even?",
+  o: ["13", "15", "18", "21"],
+  a: "18"
+},
+{
+  q: "15. What is the value of 2 + 2 × 5?",
+  o: ["20", "12", "10", "14"],
+  a: "12"
+},
+{
+  q: "16. What is the LCM of 2 and 4?",
+  o: ["2", "4", "6", "8"],
+  a: "4"
+},
+{
+  q: "17. What is the HCF of 6 and 9?",
+  o: ["1", "2", "3", "6"],
+  a: "3"
+},
+{
+  q: "18. What is the area of a rectangle with length 8 and width 5?",
+  o: ["13", "30", "40", "45"],
+  a: "40"
+},
+{
+  q: "19. What is 1/2 + 1/2?",
+  o: ["1", "1/2", "2", "3/2"],
+  a: "1"
+},
+{
+  q: "20. What is the value of 5² − 3²?",
+  o: ["10", "12", "16", "20"],
+  a: "16"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cyber Security Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Cyber Security</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1.What is Cyber Security?",
+  o: [
+    "Protecting computers and networks from attacks",
+    "Writing programs",
+    "Designing websites",
+    "Fixing hardware"
+  ],
+  a: "Protecting computers and networks from attacks"
+},
+{
+  q: "2.What is a cyber attack?",
+  o: [
+    "Physical damage to computer",
+    "Unauthorized access to systems",
+    "Software installation",
+    "System update"
+  ],
+  a: "Unauthorized access to systems"
+},
+{
+  q: "3.What is malware?",
+  o: [
+    "Useful software",
+    "Malicious software",
+    "Hardware failure",
+    "Network cable"
+  ],
+  a: "Malicious software"
+},
+{
+  q: "4.Which is an example of malware?",
+  o: ["Antivirus", "Firewall", "Virus", "Backup"],
+  a: "Virus"
+},
+{
+  q: "5.What is phishing?",
+  o: [
+    "A type of fishing",
+    "Fake emails to steal information",
+    "Network testing",
+    "Data backup"
+  ],
+  a: "Fake emails to steal information"
+},
+{
+  q: "6.What is a firewall?",
+  o: [
+    "A security system that monitors network traffic",
+    "A virus",
+    "A browser",
+    "A database"
+  ],
+  a: "A security system that monitors network traffic"
+},
+{
+  q: "7.What is encryption?",
+  o: [
+    "Deleting data",
+    "Converting data into secret code",
+    "Copying data",
+    "Compressing data"
+  ],
+  a: "Converting data into secret code"
+},
+{
+  q: "8.What is decryption?",
+  o: [
+    "Encrypting data",
+    "Converting encrypted data back to original form",
+    "Deleting data",
+    "Hiding data"
+  ],
+  a: "Converting encrypted data back to original form"
+},
+{
+  q: "9.What is authentication?",
+  o: [
+    "Checking user identity",
+    "Data storage",
+    "Data encryption",
+    "Network routing"
+  ],
+  a: "Checking user identity"
+},
+{
+  q: "10.What is authorization?",
+  o: [
+    "Granting permissions to users",
+    "User login",
+    "Password creation",
+    "Data encryption"
+  ],
+  a: "Granting permissions to users"
+},
+{
+  q: "11.What is a strong password?",
+  o: [
+    "Only numbers",
+    "Only letters",
+    "Combination of letters, numbers, and symbols",
+    "User name"
+  ],
+  a: "Combination of letters, numbers, and symbols"
+},
+{
+  q: "12.Which is a common cyber threat?",
+  o: ["Phishing", "Backup", "Update", "Compression"],
+  a: "Phishing"
+},
+{
+  q: "13.What is ransomware?",
+  o: [
+    "Software that locks data and demands payment",
+    "Antivirus",
+    "Backup software",
+    "Free software"
+  ],
+  a: "Software that locks data and demands payment"
+},
+{
+  q: "14.What does HTTPS provide?",
+  o: [
+    "Faster internet",
+    "Secure communication",
+    "Free websites",
+    "Offline access"
+  ],
+  a: "Secure communication"
+},
+{
+  q: "15.What is a data breach?",
+  o: [
+    "Authorized data access",
+    "Unauthorized access to confidential data",
+    "Data backup",
+    "System update"
+  ],
+  a: "Unauthorized access to confidential data"
+},
+{
+  q: "16.Which tool is used to protect against malware?",
+  o: ["Firewall", "Antivirus", "Router", "Switch"],
+  a: "Antivirus"
+},
+{
+  q: "17.What is two-factor authentication?",
+  o: [
+    "Using two passwords",
+    "Using two methods to verify identity",
+    "Logging in twice",
+    "Sharing password"
+  ],
+  a: "Using two methods to verify identity"
+},
+{
+  q: "18.What is social engineering?",
+  o: [
+    "Programming technique",
+    "Manipulating people to reveal information",
+    "Network design",
+    "Data encryption"
+  ],
+  a: "Manipulating people to reveal information"
+},
+{
+  q: "19.What is cybercrime?",
+  o: [
+    "Legal online activity",
+    "Crime involving computers or networks",
+    "Hardware repair",
+    "Software testing"
+  ],
+  a: "Crime involving computers or networks"
+},
+{
+  q: "20.What is the best way to stay safe online?",
+  o: [
+    "Sharing passwords",
+    "Clicking unknown links",
+    "Using strong passwords and security tools",
+    "Ignoring updates"
+  ],
+  a: "Using strong passwords and security tools"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

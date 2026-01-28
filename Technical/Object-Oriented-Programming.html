@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Object-Oriented Programming Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Object-Oriented Programming</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{q:"What does OOP stand for?",o:["Object Oriented Programming","Open Object Programming","Optional Object Programming","Original Object Process"],a:"Object Oriented Programming"},
+{q:"Which concept bundles data and methods?",o:["Inheritance","Encapsulation","Polymorphism","Abstraction"],a:"Encapsulation"},
+{q:"Which hides internal details?",o:["Encapsulation","Inheritance","Abstraction","Polymorphism"],a:"Abstraction"},
+{q:"Which allows class property inheritance?",o:["Encapsulation","Inheritance","Polymorphism","Abstraction"],a:"Inheritance"},
+{q:"Same method name, different behavior?",o:["Inheritance","Encapsulation","Polymorphism","Abstraction"],a:"Polymorphism"},
+{q:"What is an object?",o:["Blueprint","Instance","Method","Variable"],a:"Instance"},
+{q:"What is a class?",o:["Object","Instance","Blueprint","Variable"],a:"Blueprint"},
+{q:"Keyword to create object in Java?",o:["class","object","new","create"],a:"new"},
+{q:"Private access modifier allows?",o:["public","protected","default","private"],a:"private"},
+{q:"Protected access allows?",o:["private","default","protected","public"],a:"protected"},
+{q:"What is constructor?",o:["Destroyer","Initializer","Variable","Loop"],a:"Initializer"},
+{q:"Feature for reusability?",o:["Encapsulation","Polymorphism","Inheritance","Abstraction"],a:"Inheritance"},
+{q:"Keyword to inherit class?",o:["this","super","extends","implements"],a:"extends"},
+{q:"Keyword for current object?",o:["this","super","self","current"],a:"this"},
+{q:"Interfaces achieve?",o:["Encapsulation","Abstraction","Inheritance","Polymorphism"],a:"Abstraction"},
+{q:"Java does not support?",o:["Single","Multilevel","Hierarchical","Multiple"],a:"Multiple"},
+{q:"Method overloading?",o:["Same name, different params","Different name","Same class","Recursive"],a:"Same name, different params"},
+{q:"Method overriding?",o:["Same class","Subclass same signature","Different name","Parent call"],a:"Subclass same signature"},
+{q:"Keyword to stop overriding?",o:["static","private","final","protected"],a:"final"},
+{q:"Runtime polymorphism uses?",o:["Overloading","Overriding","Encapsulation","Abstraction"],a:"Overriding"}
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

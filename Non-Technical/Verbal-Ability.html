@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Verbal-Ability Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Verbal-Ability Quiz</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1. Choose the correct synonym of 'Happy'.",
+  o: ["Sad", "Joyful", "Angry", "Tired"],
+  a: "Joyful"
+},
+{
+  q: "2. Choose the correct antonym of 'Increase'.",
+  o: ["Grow", "Rise", "Decrease", "Expand"],
+  a: "Decrease"
+},
+{
+  q: "3. Choose the correctly spelled word.",
+  o: ["Recieve", "Receive", "Receeve", "Recive"],
+  a: "Receive"
+},
+{
+  q: "4. Choose the correct meaning of the word 'Transparent'.",
+  o: [
+    "Hard to understand",
+    "Clear and easy to see through",
+    "Dark in color",
+    "Heavy"
+  ],
+  a: "Clear and easy to see through"
+},
+{
+  q: "5. Choose the correct sentence.",
+  o: [
+    "He don’t like coffee.",
+    "He doesn’t likes coffee.",
+    "He doesn’t like coffee.",
+    "He don’t likes coffee."
+  ],
+  a: "He doesn’t like coffee."
+},
+{
+  q: "6. Choose the synonym of 'Quick'.",
+  o: ["Slow", "Fast", "Lazy", "Weak"],
+  a: "Fast"
+},
+{
+  q: "7. Choose the antonym of 'Strong'.",
+  o: ["Powerful", "Weak", "Solid", "Firm"],
+  a: "Weak"
+},
+{
+  q: "8. Choose the correct word to fill in the blank: She ___ to school every day.",
+  o: ["go", "goes", "gone", "going"],
+  a: "goes"
+},
+{
+  q: "9. Choose the correctly spelled word.",
+  o: ["Beautifull", "Beutiful", "Beautiful", "Beautifal"],
+  a: "Beautiful"
+},
+{
+  q: "10. Choose the meaning of the idiom 'Break the ice'.",
+  o: [
+    "To start a conversation",
+    "To break something",
+    "To feel cold",
+    "To end a relationship"
+  ],
+  a: "To start a conversation"
+},
+{
+  q: "11. Choose the synonym of 'Angry'.",
+  o: ["Calm", "Furious", "Happy", "Relaxed"],
+  a: "Furious"
+},
+{
+  q: "12. Choose the antonym of 'Early'.",
+  o: ["Fast", "Soon", "Late", "Quick"],
+  a: "Late"
+},
+{
+  q: "13. Choose the correct sentence.",
+  o: [
+    "She has finished her work.",
+    "She have finished her work.",
+    "She finishing her work.",
+    "She finish her work."
+  ],
+  a: "She has finished her work."
+},
+{
+  q: "14. Choose the correct meaning of the word 'Honest'.",
+  o: [
+    "Truthful",
+    "Clever",
+    "Lazy",
+    "Angry"
+  ],
+  a: "Truthful"
+},
+{
+  q: "15. Choose the correct word: He is good ___ mathematics.",
+  o: ["in", "on", "at", "with"],
+  a: "at"
+},
+{
+  q: "16. Choose the synonym of 'Begin'.",
+  o: ["End", "Stop", "Start", "Finish"],
+  a: "Start"
+},
+{
+  q: "17. Choose the antonym of 'Cheap'.",
+  o: ["Low", "Costly", "Small", "Light"],
+  a: "Costly"
+},
+{
+  q: "18. Choose the correct sentence.",
+  o: [
+    "They is playing outside.",
+    "They are playing outside.",
+    "They am playing outside.",
+    "They be playing outside."
+  ],
+  a: "They are playing outside."
+},
+{
+  q: "19. Choose the meaning of the idiom 'Once in a blue moon'.",
+  o: [
+    "Very often",
+    "Rarely",
+    "Every day",
+    "At night"
+  ],
+  a: "Rarely"
+},
+{
+  q: "20. Choose the correct spelling.",
+  o: ["Enviroment", "Environment", "Environmant", "Enviornment"],
+  a: "Environment"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

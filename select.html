@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz App</title>
+  <style>
+
+     body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .card{
+      font-size: 40px;
+      font-weight: bold;
+      color: black;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.7);
+      padding: 60px;
+      border-radius: 50px;
+    }
+
+    .b1 {
+      background-color: white;
+      color: #2196f3;
+      border: none;
+      padding: 15px 30px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      transition: transform 0.2s ease;
+      margin: 9.9%;
+      margin-left: 25%;
+    }
+    .b2{
+      background-color: white;
+      color: #2196f3;
+      border: none;
+      padding: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      transition: transform 0.2s ease;
+      margin: 9.9%;
+      margin-left: 25%;
+
+    }
+    button a{
+        text-decoration: none;
+      color: #2196f3;
+    }
+
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+
+  </style>
+</head>
+<body>
+
+
+  <!-- Screen 2: Select Type -->
+  <div class="card" id="screen2">
+    <h3>Select Quiz Type:</h3>
+    <button onclick="showScreen(3)" class="b1">
+    <a href="D:\Projects\quiz\Technical\Technical.html">Technical</a></button>
+    <button onclick="showScreen(3)" class="b2">
+    <a href="D:\Projects\quiz\Non-Technical\Non-Technical.html">Non-Technical</a></button>
+  </div>
+
+  
+  <script>
+    function showScreen(n) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('screen' + i).style.display = 'none';
+      }
+      document.getElementById('screen' + n).style.display = 'block';
+    }
+
+    function submitAnswer() {
+      const answer = document.querySelector('input[name="q1"]:checked');
+      if (answer && answer.value === 'A') {
+        document.getElementById('resultText').innerText = '🎉 YOU WIN!';
+      } else {
+        document.getElementById('resultText').innerText = '😢 YOU LOST!';
+      }
+      showScreen(4);
+    }
+  </script>
+
+</body>
+</html>
+
+

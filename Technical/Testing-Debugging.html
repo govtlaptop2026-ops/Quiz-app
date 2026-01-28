@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Testing and Debugging Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Testing and Debugging</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1.What is software testing?",
+  o: [
+    "Writing code",
+    "Finding defects in software",
+    "Deploying application",
+    "Designing UI"
+  ],
+  a: "Finding defects in software"
+},
+{
+  q: "2.Main purpose of testing is?",
+  o: [
+    "Increase cost",
+    "Ensure software quality",
+    "Reduce users",
+    "Avoid deployment"
+  ],
+  a: "Ensure software quality"
+},
+{
+  q: "3.What is debugging?",
+  o: [
+    "Writing test cases",
+    "Fixing errors in code",
+    "Deploying software",
+    "Documenting code"
+  ],
+  a: "Fixing errors in code"
+},
+{
+  q: "4.When is debugging done?",
+  o: [
+    "Before testing",
+    "After finding a bug",
+    "Before coding",
+    "Without errors"
+  ],
+  a: "After finding a bug"
+},
+{
+  q: "5.Which testing checks individual components?",
+  o: [
+    "System testing",
+    "Integration testing",
+    "Unit testing",
+    "Acceptance testing"
+  ],
+  a: "Unit testing"
+},
+{
+  q: "6.Which testing checks interaction between modules?",
+  o: [
+    "Unit testing",
+    "System testing",
+    "Integration testing",
+    "Regression testing"
+  ],
+  a: "Integration testing"
+},
+{
+  q: "7.What is system testing?",
+  o: [
+    "Testing individual methods",
+    "Testing complete system",
+    "Testing database only",
+    "Testing UI only"
+  ],
+  a: "Testing complete system"
+},
+{
+  q: "8.What is acceptance testing?",
+  o: [
+    "Developer testing",
+    "User testing",
+    "Manager testing",
+    "Unit testing"
+  ],
+  a: "User testing"
+},
+{
+  q: "9.What is regression testing?",
+  o: [
+    "Testing new features only",
+    "Re-testing after changes",
+    "Testing performance",
+    "Testing security"
+  ],
+  a: "Re-testing after changes"
+},
+{
+  q: "10.Which testing is done without executing code?",
+  o: [
+    "Dynamic testing",
+    "Manual testing",
+    "Static testing",
+    "Performance testing"
+  ],
+  a: "Static testing"
+},
+{
+  q: "11.Which testing is done by executing the program?",
+  o: [
+    "Static testing",
+    "Dynamic testing",
+    "Documentation testing",
+    "Design testing"
+  ],
+  a: "Dynamic testing"
+},
+{
+  q: "12.What is a bug?",
+  o: [
+    "Feature",
+    "Error in software",
+    "Hardware device",
+    "User request"
+  ],
+  a: "Error in software"
+},
+{
+  q: "13.Which tool is used for debugging?",
+  o: ["Debugger", "Compiler", "Interpreter", "Loader"],
+  a: "Debugger"
+},
+{
+  q: "14.What is breakpoint?",
+  o: [
+    "Stopping program permanently",
+    "Temporary stop to inspect code",
+    "Removing code",
+    "Restarting system"
+  ],
+  a: "Temporary stop to inspect code"
+},
+{
+  q: "15.Which testing ensures changes do not break existing features?",
+  o: [
+    "Unit testing",
+    "Integration testing",
+    "Regression testing",
+    "System testing"
+  ],
+  a: "Regression testing"
+},
+{
+  q: "16.What is manual testing?",
+  o: [
+    "Testing using tools",
+    "Testing without automation tools",
+    "Only unit testing",
+    "Only performance testing"
+  ],
+  a: "Testing without automation tools"
+},
+{
+  q: "17.What is automated testing?",
+  o: [
+    "Manual execution",
+    "Testing using scripts and tools",
+    "No testing",
+    "User testing"
+  ],
+  a: "Testing using scripts and tools"
+},
+{
+  q: "18.Which testing focuses on system speed?",
+  o: [
+    "Security testing",
+    "Performance testing",
+    "Regression testing",
+    "Unit testing"
+  ],
+  a: "Performance testing"
+},
+{
+  q: "19.Which testing focuses on data protection?",
+  o: [
+    "Performance testing",
+    "Security testing",
+    "System testing",
+    "Acceptance testing"
+  ],
+  a: "Security testing"
+},
+{
+  q: "20.What is the first step in debugging?",
+  o: [
+    "Fix the code",
+    "Identify the problem",
+    "Deploy application",
+    "Write documentation"
+  ],
+  a: "Identify the problem"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

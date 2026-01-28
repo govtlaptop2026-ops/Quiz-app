@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DevOps Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>DevOps</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1.What is DevOps?",
+  o: [
+    "Software programming language",
+    "Combination of Development and Operations",
+    "Database system",
+    "Network protocol"
+  ],
+  a: "Combination of Development and Operations"
+},
+{
+  q: "2.Main goal of DevOps is?",
+  o: [
+    "Increase documentation",
+    "Faster and reliable software delivery",
+    "Reduce coding",
+    "Avoid testing"
+  ],
+  a: "Faster and reliable software delivery"
+},
+{
+  q: "3.Which is a key DevOps practice?",
+  o: [
+    "Manual testing only",
+    "Continuous Integration",
+    "Waterfall model",
+    "Code freezing"
+  ],
+  a: "Continuous Integration"
+},
+{
+  q: "4.What is CI/CD?",
+  o: [
+    "Code Integration and Code Deployment",
+    "Continuous Integration and Continuous Delivery",
+    "Computer Interface Control Device",
+    "Central Internet Control Data"
+  ],
+  a: "Continuous Integration and Continuous Delivery"
+},
+{
+  q: "5.Which tool is used for version control in DevOps?",
+  o: ["Git", "Photoshop", "Excel", "PowerPoint"],
+  a: "Git"
+},
+{
+  q: "6.What is Continuous Integration?",
+  o: [
+    "Integrating code frequently into a shared repository",
+    "Deploying code manually",
+    "Stopping development",
+    "Testing only once"
+  ],
+  a: "Integrating code frequently into a shared repository"
+},
+{
+  q: "7.What is Continuous Deployment?",
+  o: [
+    "Manual deployment",
+    "Automatic deployment to production",
+    "Code deletion",
+    "Testing only"
+  ],
+  a: "Automatic deployment to production"
+},
+{
+  q: "8.Which tool is used for CI/CD pipelines?",
+  o: ["Jenkins", "MS Word", "Paint", "Calculator"],
+  a: "Jenkins"
+},
+{
+  q: "9.What is containerization?",
+  o: [
+    "Storing files",
+    "Packaging applications with dependencies",
+    "Encrypting data",
+    "Deleting servers"
+  ],
+  a: "Packaging applications with dependencies"
+},
+{
+  q: "10.Which container tool is widely used?",
+  o: ["Docker", "GitHub", "Linux", "Apache"],
+  a: "Docker"
+},
+{
+  q: "11.What is Kubernetes used for?",
+  o: [
+    "Code editing",
+    "Container orchestration",
+    "Image editing",
+    "Database management"
+  ],
+  a: "Container orchestration"
+},
+{
+  q: "12.What is Infrastructure as Code (IaC)?",
+  o: [
+    "Manual server setup",
+    "Managing infrastructure using code",
+    "Writing application code",
+    "Database coding"
+  ],
+  a: "Managing infrastructure using code"
+},
+{
+  q: "13.Which tool is used for Infrastructure as Code?",
+  o: ["Terraform", "HTML", "CSS", "Bootstrap"],
+  a: "Terraform"
+},
+{
+  q: "14.What is monitoring in DevOps?",
+  o: [
+    "Writing code",
+    "Tracking application performance and health",
+    "Deleting logs",
+    "Stopping servers"
+  ],
+  a: "Tracking application performance and health"
+},
+{
+  q: "15.Which tool is used for monitoring?",
+  o: ["Prometheus", "Git", "Docker", "Jenkins"],
+  a: "Prometheus"
+},
+{
+  q: "16.What is logging?",
+  o: [
+    "Recording system and application events",
+    "Deleting files",
+    "Stopping applications",
+    "Encrypting data"
+  ],
+  a: "Recording system and application events"
+},
+{
+  q: "17.What is automation in DevOps?",
+  o: [
+    "Doing tasks manually",
+    "Automating repetitive tasks",
+    "Avoiding tools",
+    "Writing documentation"
+  ],
+  a: "Automating repetitive tasks"
+},
+{
+  q: "18.Which cloud platform supports DevOps?",
+  o: ["AWS", "MS Paint", "Notepad", "Calculator"],
+  a: "AWS"
+},
+{
+  q: "19.What is DevOps culture?",
+  o: [
+    "Working in isolation",
+    "Collaboration between teams",
+    "Only management work",
+    "Only testing"
+  ],
+  a: "Collaboration between teams"
+},
+{
+  q: "20.What is the benefit of DevOps?",
+  o: [
+    "Slower releases",
+    "Higher error rates",
+    "Faster delivery and improved quality",
+    "Less collaboration"
+  ],
+  a: "Faster delivery and improved quality"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

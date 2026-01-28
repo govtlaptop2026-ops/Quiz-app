@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ethics-Values Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Ethics-Values Quiz</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1. What are ethics?",
+  o: [
+    "Personal habits",
+    "Rules of good and bad behavior",
+    "Legal punishments",
+    "Religious rituals"
+  ],
+  a: "Rules of good and bad behavior"
+},
+{
+  q: "2. Which of the following is an example of honesty?",
+  o: [
+    "Cheating in an exam",
+    "Telling the truth",
+    "Blaming others",
+    "Hiding mistakes"
+  ],
+  a: "Telling the truth"
+},
+{
+  q: "3. What does integrity mean?",
+  o: [
+    "Being popular",
+    "Doing the right thing even when no one is watching",
+    "Being rich",
+    "Following others"
+  ],
+  a: "Doing the right thing even when no one is watching"
+},
+{
+  q: "4. Which value helps in building trust?",
+  o: ["Honesty", "Anger", "Greed", "Laziness"],
+  a: "Honesty"
+},
+{
+  q: "5. What is respect?",
+  o: [
+    "Ignoring others",
+    "Treating others with dignity",
+    "Controlling people",
+    "Arguing always"
+  ],
+  a: "Treating others with dignity"
+},
+{
+  q: "6. Which action shows responsibility?",
+  o: [
+    "Avoiding work",
+    "Blaming others",
+    "Completing tasks on time",
+    "Making excuses"
+  ],
+  a: "Completing tasks on time"
+},
+{
+  q: "7. What does fairness mean?",
+  o: [
+    "Favoring friends",
+    "Treating everyone equally",
+    "Ignoring rules",
+    "Taking advantage of others"
+  ],
+  a: "Treating everyone equally"
+},
+{
+  q: "8. Which value encourages helping others?",
+  o: ["Selfishness", "Compassion", "Pride", "Jealousy"],
+  a: "Compassion"
+},
+{
+  q: "9. What should you do if you make a mistake?",
+  o: [
+    "Hide it",
+    "Blame someone else",
+    "Accept and correct it",
+    "Ignore it"
+  ],
+  a: "Accept and correct it"
+},
+{
+  q: "10. Which behavior is unethical?",
+  o: [
+    "Following rules",
+    "Helping a colleague",
+    "Accepting bribes",
+    "Speaking politely"
+  ],
+  a: "Accepting bribes"
+},
+{
+  q: "11. What is accountability?",
+  o: [
+    "Avoiding responsibility",
+    "Taking responsibility for actions",
+    "Giving orders",
+    "Ignoring mistakes"
+  ],
+  a: "Taking responsibility for actions"
+},
+{
+  q: "12. Which value promotes teamwork?",
+  o: ["Cooperation", "Competition", "Ego", "Self-interest"],
+  a: "Cooperation"
+},
+{
+  q: "13. What does empathy mean?",
+  o: [
+    "Judging others",
+    "Understanding others’ feelings",
+    "Ignoring emotions",
+    "Controlling people"
+  ],
+  a: "Understanding others’ feelings"
+},
+{
+  q: "14. Which action reflects discipline?",
+  o: [
+    "Coming late regularly",
+    "Following rules and routines",
+    "Breaking rules",
+    "Avoiding duties"
+  ],
+  a: "Following rules and routines"
+},
+{
+  q: "15. What is moral courage?",
+  o: [
+    "Physical strength",
+    "Standing up for what is right",
+    "Following the crowd",
+    "Avoiding problems"
+  ],
+  a: "Standing up for what is right"
+},
+{
+  q: "16. Which value helps resolve conflicts peacefully?",
+  o: ["Patience", "Anger", "Ego", "Revenge"],
+  a: "Patience"
+},
+{
+  q: "17. What does transparency mean?",
+  o: [
+    "Keeping secrets",
+    "Being open and honest",
+    "Hiding information",
+    "Avoiding questions"
+  ],
+  a: "Being open and honest"
+},
+{
+  q: "18. Which behavior shows respect for time?",
+  o: [
+    "Being punctual",
+    "Coming late",
+    "Postponing work",
+    "Ignoring deadlines"
+  ],
+  a: "Being punctual"
+},
+{
+  q: "19. What is one core ethical value in professional life?",
+  o: ["Integrity", "Jealousy", "Greed", "Carelessness"],
+  a: "Integrity"
+},
+{
+  q: "20. Which attitude best reflects strong values?",
+  o: [
+    "Selfishness",
+    "Responsibility",
+    "Dishonesty",
+    "Neglect"
+  ],
+  a: "Responsibility"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

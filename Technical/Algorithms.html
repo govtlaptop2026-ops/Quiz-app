@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Algorithms Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Algorithms</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1.What is an algorithm?",
+  o: ["A programming language", "A step-by-step procedure to solve a problem", "A data structure", "A compiler"],
+  a: "A step-by-step procedure to solve a problem"
+},
+{
+  q: "2.Which algorithm is used to search in a sorted array?",
+  o: ["Linear Search", "Binary Search", "Bubble Sort", "Selection Sort"],
+  a: "Binary Search"
+},
+{
+  q: "3.What is the time complexity of Linear Search?",
+  o: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+  a: "O(n)"
+},
+{
+  q: "4.What is the best-case time complexity of Binary Search?",
+  o: ["O(1)", "O(n)", "O(log n)", "O(n log n)"],
+  a: "O(1)"
+},
+{
+  q: "5.Which sorting algorithm is the simplest?",
+  o: ["Quick Sort", "Merge Sort", "Bubble Sort", "Heap Sort"],
+  a: "Bubble Sort"
+},
+{
+  q: "6.Which sorting algorithm has best average performance?",
+  o: ["Bubble Sort", "Insertion Sort", "Quick Sort", "Selection Sort"],
+  a: "Quick Sort"
+},
+{
+  q: "7.Which sorting algorithm uses divide and conquer?",
+  o: ["Bubble Sort", "Insertion Sort", "Merge Sort", "Selection Sort"],
+  a: "Merge Sort"
+},
+{
+  q: "8.What is the worst-case time complexity of Bubble Sort?",
+  o: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+  a: "O(n²)"
+},
+{
+  q: "9.Which algorithm technique breaks problem into subproblems?",
+  o: ["Greedy", "Divide and Conquer", "Backtracking", "Brute Force"],
+  a: "Divide and Conquer"
+},
+{
+  q: "10.Which algorithm is used to find shortest path?",
+  o: ["DFS", "BFS", "Dijkstra's Algorithm", "Prim's Algorithm"],
+  a: "Dijkstra's Algorithm"
+},
+{
+  q: "11.Which algorithm is used to find minimum spanning tree?",
+  o: ["Dijkstra", "Kruskal", "Binary Search", "DFS"],
+  a: "Kruskal"
+},
+{
+  q: "12.Which algorithm uses greedy approach?",
+  o: ["Merge Sort", "Quick Sort", "Prim's Algorithm", "Binary Search"],
+  a: "Prim's Algorithm"
+},
+{
+  q: "13.What is the time complexity of Binary Search?",
+  o: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+  a: "O(log n)"
+},
+{
+  q: "14.Which algorithm checks all possibilities?",
+  o: ["Greedy", "Divide and Conquer", "Brute Force", "Dynamic Programming"],
+  a: "Brute Force"
+},
+{
+  q: "15.Which algorithm uses recursion heavily?",
+  o: ["Binary Search", "Quick Sort", "Both A and B", "Linear Search"],
+  a: "Both A and B"
+},
+{
+  q: "16.Which sorting algorithm is stable?",
+  o: ["Quick Sort", "Heap Sort", "Merge Sort", "Selection Sort"],
+  a: "Merge Sort"
+},
+{
+  q: "17.Which algorithm finds shortest path in unweighted graph?",
+  o: ["DFS", "BFS", "Dijkstra", "Bellman-Ford"],
+  a: "BFS"
+},
+{
+  q: "18.Which algorithm uses backtracking?",
+  o: ["N-Queens", "Merge Sort", "Binary Search", "Bubble Sort"],
+  a: "N-Queens"
+},
+{
+  q: "19.What is the worst-case time complexity of Quick Sort?",
+  o: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+  a: "O(n²)"
+},
+{
+  q: "20.Which algorithm is used for pattern matching?",
+  o: ["KMP Algorithm", "DFS", "Heap Sort", "Binary Search"],
+  a: "KMP Algorithm"
+}
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SQL Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>SQL</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+ 
+ {
+  q: "1.What is SQL?",
+  o: [
+    "A programming language",
+    "A query language for databases",
+    "An operating system",
+    "A web browser"
+  ],
+  a: "A query language for databases"
+},
+{
+  q: "2.What does SQL stand for?",
+  o: [
+    "Structured Query Language",
+    "Simple Query Language",
+    "Sequential Query Language",
+    "Standard Query Logic"
+  ],
+  a: "Structured Query Language"
+},
+{
+  q: "3.Which SQL command is used to retrieve data?",
+  o: ["GET", "FETCH", "SELECT", "SHOW"],
+  a: "SELECT"
+},
+{
+  q: "4.Which SQL command is used to insert new data?",
+  o: ["ADD", "INSERT", "PUT", "UPDATE"],
+  a: "INSERT"
+},
+{
+  q: "5.Which SQL command is used to modify existing data?",
+  o: ["CHANGE", "UPDATE", "ALTER", "MODIFY"],
+  a: "UPDATE"
+},
+{
+  q: "6.Which SQL command is used to delete records?",
+  o: ["REMOVE", "DELETE", "DROP", "TRUNCATE"],
+  a: "DELETE"
+},
+{
+  q: "7.Which clause is used to filter records?",
+  o: ["FROM", "WHERE", "GROUP BY", "ORDER BY"],
+  a: "WHERE"
+},
+{
+  q: "8.Which SQL clause is used to sort results?",
+  o: ["SORT BY", "ORDER BY", "GROUP BY", "WHERE"],
+  a: "ORDER BY"
+},
+{
+  q: "9.Which function returns the number of rows?",
+  o: ["SUM()", "COUNT()", "TOTAL()", "NUMBER()"],
+  a: "COUNT()"
+},
+{
+  q: "10.Which function returns the largest value?",
+  o: ["MAX()", "TOP()", "HIGH()", "LARGE()"],
+  a: "MAX()"
+},
+{
+  q: "11.Which SQL clause is used with aggregate functions?",
+  o: ["WHERE", "GROUP BY", "ORDER BY", "HAVING"],
+  a: "GROUP BY"
+},
+{
+  q: "12.Which clause is used to filter grouped data?",
+  o: ["WHERE", "GROUP BY", "HAVING", "ORDER BY"],
+  a: "HAVING"
+},
+{
+  q: "13.What is a primary key?",
+  o: [
+    "A key that uniquely identifies a record",
+    "A duplicate key",
+    "A foreign key",
+    "A composite key"
+  ],
+  a: "A key that uniquely identifies a record"
+},
+{
+  q: "14.What is a foreign key?",
+  o: [
+    "A primary key",
+    "A key used to link two tables",
+    "A duplicate key",
+    "An index"
+  ],
+  a: "A key used to link two tables"
+},
+{
+  q: "15.Which SQL statement creates a table?",
+  o: ["MAKE TABLE", "NEW TABLE", "CREATE TABLE", "ADD TABLE"],
+  a: "CREATE TABLE"
+},
+{
+  q: "16.Which SQL statement removes a table permanently?",
+  o: ["DELETE TABLE", "REMOVE TABLE", "DROP TABLE", "TRUNCATE TABLE"],
+  a: "DROP TABLE"
+},
+{
+  q: "17.What does TRUNCATE do?",
+  o: [
+    "Deletes specific rows",
+    "Deletes all rows but keeps table structure",
+    "Removes the table",
+    "Updates records"
+  ],
+  a: "Deletes all rows but keeps table structure"
+},
+{
+  q: "18.Which SQL operator is used to check a range?",
+  o: ["IN", "BETWEEN", "LIKE", "ANY"],
+  a: "BETWEEN"
+},
+{
+  q: "19.Which operator is used for pattern matching?",
+  o: ["IN", "LIKE", "BETWEEN", "MATCH"],
+  a: "LIKE"
+},
+{
+  q: "20.Which SQL constraint ensures no duplicate values?",
+  o: ["NOT NULL", "UNIQUE", "CHECK", "DEFAULT"],
+  a: "UNIQUE"
+}
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

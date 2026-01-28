@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Data-Interpretation Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Data-Interpretation</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1. If a company sold 40 units on Monday and 60 units on Tuesday, what is the total units sold?",
+  o: ["80", "90", "100", "110"],
+  a: "100"
+},
+{
+  q: "2. If the price of a product is ₹50 and it increases by 20%, what is the new price?",
+  o: ["₹55", "₹60", "₹65", "₹70"],
+  a: "₹60"
+},
+{
+  q: "3. In a class of 50 students, 30 are boys. What percentage are girls?",
+  o: ["20%", "30%", "40%", "50%"],
+  a: "40%"
+},
+{
+  q: "4. A bar chart shows sales of 200 units in January and 300 units in February. How many more units were sold in February?",
+  o: ["50", "100", "150", "200"],
+  a: "100"
+},
+{
+  q: "5. If a pie chart shows 25% for Product A, how much is it out of 400 units?",
+  o: ["50", "75", "100", "125"],
+  a: "100"
+},
+{
+  q: "6. The average of 10 and 20 is:",
+  o: ["12", "15", "18", "20"],
+  a: "15"
+},
+{
+  q: "7. If a company's profit was ₹80,000 in 2022 and ₹1,00,000 in 2023, what is the increase?",
+  o: ["₹10,000", "₹15,000", "₹20,000", "₹25,000"],
+  a: "₹20,000"
+},
+{
+  q: "8. A table shows attendance of 45 students on Monday and 55 on Tuesday. What is the average attendance?",
+  o: ["45", "50", "55", "60"],
+  a: "50"
+},
+{
+  q: "9. If 3 out of 12 students prefer online classes, what fraction is that?",
+  o: ["1/2", "1/3", "1/4", "1/6"],
+  a: "1/4"
+},
+{
+  q: "10. A line graph shows temperature of 30°C in the morning and 38°C in the afternoon. What is the rise in temperature?",
+  o: ["6°C", "7°C", "8°C", "9°C"],
+  a: "8°C"
+},
+{
+  q: "11. If a shop sells 120 items in a day and 30% are returned, how many items are returned?",
+  o: ["30", "36", "40", "48"],
+  a: "36"
+},
+{
+  q: "12. A chart shows expenses of ₹2000 for food and ₹3000 for rent. What is the total expense?",
+  o: ["₹4000", "₹4500", "₹5000", "₹5500"],
+  a: "₹5000"
+},
+{
+  q: "13. If a student scores 60, 70, and 80 in three tests, what is the average score?",
+  o: ["65", "70", "75", "80"],
+  a: "70"
+},
+{
+  q: "14. A pie chart shows 50% students like Mathematics. How many students is that out of 200?",
+  o: ["50", "75", "100", "150"],
+  a: "100"
+},
+{
+  q: "15. If sales in March are 500 units and in April are 400 units, what is the percentage decrease?",
+  o: ["10%", "15%", "20%", "25%"],
+  a: "20%"
+},
+{
+  q: "16. The ratio of boys to girls in a class is 3:2. If there are 30 boys, how many girls are there?",
+  o: ["15", "20", "25", "30"],
+  a: "20"
+},
+{
+  q: "17. A graph shows income of ₹40,000 and expenses of ₹35,000. What is the savings?",
+  o: ["₹3,000", "₹4,000", "₹5,000", "₹6,000"],
+  a: "₹5,000"
+},
+{
+  q: "18. If a company produces 1000 units and sells 75%, how many units are sold?",
+  o: ["700", "750", "800", "850"],
+  a: "750"
+},
+{
+  q: "19. The average of first five natural numbers is:",
+  o: ["2", "3", "4", "5"],
+  a: "3"
+},
+{
+  q: "20. If a chart shows 60% male employees, what percentage are female employees?",
+  o: ["20%", "30%", "40%", "50%"],
+  a: "40%"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>

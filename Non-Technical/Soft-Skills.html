@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Soft-Skills Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+}
+.quiz-container{
+  width:620px;
+  background:#fff;
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+  text-align:center;
+  max-height:90vh;
+  overflow-y:auto;
+}
+h1{color:#2c3e50;margin-bottom:15px}
+#timer{color:#e74c3c;font-weight:600;margin-bottom:10px}
+#question{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  font-size:20px;
+}
+.option-btn{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #6c5ce7;
+  border-radius:10px;
+  background:#fff;
+  color:#6c5ce7;
+  font-weight:600;
+  cursor:pointer;
+}
+.option-btn:hover,.selected{
+  background:#6c5ce7;
+  color:#fff;
+}
+button{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:8px;
+  background:#0984e3;
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+#next-btn,#view-btn{display:none}
+#result{margin-top:15px;font-weight:600}
+.answer-box{
+  text-align:left;
+  border:1px solid #ccc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+
+<body>
+<div class="quiz-container">
+  <h1>Soft-Skills Quiz</h1>
+  <div id="timer"></div>
+  <div id="question"></div>
+  <div id="options"></div>
+
+  <button id="next-btn">Next ➡️</button>
+  <button id="view-btn">View Answers 📖</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions=[
+{
+  q: "1. What are soft skills?",
+  o: [
+    "Technical abilities",
+    "Personal and interpersonal skills",
+    "Machine skills",
+    "Computer programming skills"
+  ],
+  a: "Personal and interpersonal skills"
+},
+{
+  q: "2. Which soft skill helps in effective communication?",
+  o: ["Listening", "Typing speed", "Coding", "Calculation"],
+  a: "Listening"
+},
+{
+  q: "3. What does teamwork mainly require?",
+  o: [
+    "Competition",
+    "Cooperation",
+    "Isolation",
+    "Individual work only"
+  ],
+  a: "Cooperation"
+},
+{
+  q: "4. Which soft skill is important for handling conflicts?",
+  o: ["Anger", "Patience", "Avoidance", "Aggression"],
+  a: "Patience"
+},
+{
+  q: "5. What does emotional intelligence help with?",
+  o: [
+    "Ignoring emotions",
+    "Understanding and managing emotions",
+    "Avoiding people",
+    "Controlling others"
+  ],
+  a: "Understanding and managing emotions"
+},
+{
+  q: "6. Which skill helps in giving and receiving feedback?",
+  o: ["Defensiveness", "Openness", "Silence", "Carelessness"],
+  a: "Openness"
+},
+{
+  q: "7. What does time management reflect?",
+  o: [
+    "Laziness",
+    "Poor planning",
+    "Self-discipline",
+    "Carelessness"
+  ],
+  a: "Self-discipline"
+},
+{
+  q: "8. Which soft skill helps build trust?",
+  o: ["Dishonesty", "Honesty", "Manipulation", "Secrecy"],
+  a: "Honesty"
+},
+{
+  q: "9. What does adaptability mean?",
+  o: [
+    "Resisting change",
+    "Adjusting to new situations",
+    "Avoiding challenges",
+    "Ignoring problems"
+  ],
+  a: "Adjusting to new situations"
+},
+{
+  q: "10. Which skill improves problem-solving?",
+  o: [
+    "Panic",
+    "Critical thinking",
+    "Avoidance",
+    "Guessing"
+  ],
+  a: "Critical thinking"
+},
+{
+  q: "11. What quality shows professionalism?",
+  o: ["Being punctual", "Being careless", "Ignoring rules", "Late submission"],
+  a: "Being punctual"
+},
+{
+  q: "12. Which soft skill supports leadership?",
+  o: [
+    "Taking responsibility",
+    "Avoiding decisions",
+    "Fear of failure",
+    "Silence"
+  ],
+  a: "Taking responsibility"
+},
+{
+  q: "13. What helps in effective teamwork?",
+  o: [
+    "Ego",
+    "Clear communication",
+    "Ignoring others",
+    "Competition"
+  ],
+  a: "Clear communication"
+},
+{
+  q: "14. Which skill helps in managing stress?",
+  o: ["Panic", "Emotional control", "Anger", "Overreaction"],
+  a: "Emotional control"
+},
+{
+  q: "15. What does self-motivation help a person do?",
+  o: [
+    "Give up easily",
+    "Achieve goals",
+    "Avoid effort",
+    "Ignore challenges"
+  ],
+  a: "Achieve goals"
+},
+{
+  q: "16. Which behavior reflects respect?",
+  o: [
+    "Interrupting others",
+    "Active listening",
+    "Ignoring opinions",
+    "Judging quickly"
+  ],
+  a: "Active listening"
+},
+{
+  q: "17. What soft skill helps in decision-making?",
+  o: [
+    "Impulsiveness",
+    "Rational thinking",
+    "Emotional reaction",
+    "Indecisiveness"
+  ],
+  a: "Rational thinking"
+},
+{
+  q: "18. Which quality improves workplace relationships?",
+  o: ["Empathy", "Selfishness", "Ego", "Indifference"],
+  a: "Empathy"
+},
+{
+  q: "19. What does a positive attitude support?",
+  o: [
+    "Failure",
+    "Productivity and growth",
+    "Negativity",
+    "Avoidance"
+  ],
+  a: "Productivity and growth"
+},
+{
+  q: "20. Which soft skill is essential for career success?",
+  o: [
+    "Only technical skills",
+    "Combination of soft and technical skills",
+    "Luck",
+    "Speed"
+  ],
+  a: "Combination of soft and technical skills"
+}
+
+];
+
+let i=0,answers=[],timer,time=15;
+
+const qEl=document.getElementById("question"),
+optEl=document.getElementById("options"),
+timerEl=document.getElementById("timer"),
+nextBtn=document.getElementById("next-btn"),
+viewBtn=document.getElementById("view-btn"),
+resultEl=document.getElementById("result");
+
+function showQ(){
+  clearInterval(timer);
+  time=15;
+  timerEl.textContent=`Time left: ${time}s`;
+  nextBtn.style.display="none";
+  optEl.innerHTML="";
+  qEl.textContent=`Q${i+1}. ${questions[i].q}`;
+
+  questions[i].o.forEach(opt=>{
+    const b=document.createElement("button");
+    b.textContent=opt;
+    b.className="option-btn";
+    b.onclick=()=>select(b,opt);
+    optEl.appendChild(b);
+  });
+
+  timer=setInterval(()=>{
+    time--;
+    timerEl.textContent=`Time left: ${time}s`;
+    if(time===0) next();
+  },1000);
+}
+
+function select(btn,opt){
+  answers[i]=opt;
+  [...optEl.children].forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  nextBtn.style.display="block";
+  clearInterval(timer);
+}
+
+function next(){
+  answers[i]??="No answer";
+  i++;
+  i<questions.length?showQ():showResult();
+}
+
+function showResult(){
+  clearInterval(timer);
+  timerEl.textContent="";
+  qEl.textContent="🎉 Quiz Completed!";
+  optEl.innerHTML="";
+  nextBtn.style.display="none";
+
+  const score=answers.filter((a,idx)=>a===questions[idx].a).length;
+  resultEl.textContent=`Score: ${score}/${questions.length}`;
+  viewBtn.style.display="block";
+}
+
+viewBtn.onclick=()=>{
+  optEl.innerHTML="";
+  document.querySelector(".quiz-container").scrollTop=0;
+  questions.forEach((q,idx)=>{
+    optEl.innerHTML+=`
+    <div class="answer-box">
+      <b>Q${idx+1}:</b> ${q.q}<br>
+      ✔ <span class="correct">${q.a}</span><br>
+      Your Answer:
+      <span class="${answers[idx]===q.a?'correct':'wrong'}">
+        ${answers[idx]||"No answer"}
+      </span>
+    </div>`;
+  });
+};
+
+nextBtn.onclick=next;
+showQ();
+</script>
+</body>
+</html>
